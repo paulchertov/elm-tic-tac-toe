@@ -50,13 +50,15 @@ make_turn x y player model =
 swap_players : Model -> (Model, Cmd Msg)
 swap_players model =
     case model.player_token of
-        X -> (
-                { make_empty_model
-                | player_token = O
-                , playground = clear_playground
-                }
-                , Cmd.none
-             )
+        X ->
+            let
+                new_model =
+                    { make_empty_model
+                    | player_token = O
+                    , playground = clear_playground
+                    }
+            in
+                (new_model, make_decision X new_model)
         O -> (
                 { make_empty_model
                 | player_token = X
