@@ -1,6 +1,6 @@
 module Style exposing (style_tag)
 import Html exposing (text, node)
-import Html.Attributes exposing (class, type')
+import Html.Attributes exposing (class, type_)
 
 style_text = """
 .test-app, .test-app *{
@@ -28,6 +28,8 @@ style_text = """
     height: 100px;
     float: left;
     font-size: 45px;
+    text-align: center;
+    padding: 20px;
     border: 1px solid #000;
 }
 .test-app > .playground > .row > .field.win{
@@ -35,4 +37,4 @@ style_text = """
 }
 """
 style_tag =
-    node "style" [type' "text/css"] [text style_text]
+    node "style" [type_ "text/css"] [text style_text]

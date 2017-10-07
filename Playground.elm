@@ -125,8 +125,8 @@ slash_diagonal = (\x -> \y -> y == x)
 
 all_lines =
     List.concat[
-      List.map i_row [0..2],
-      List.map i_col [0..2],
+      List.map i_row <| List.range 0 2,
+      List.map i_col <| List.range 0 2,
       [hack_diagonal, slash_diagonal]
     ]
 

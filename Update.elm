@@ -2,10 +2,9 @@ module Update exposing (Msg(..), PlayerType(..),
     make_turn, swap_players, make_AI_turn
     )
 
-
 import Array
 import Random
-
+import Tuple exposing (first, second)
 
 import AI exposing (LineType(..), map_possibilities,
     coordinates_of_empties_in_line, coordinates_of_all_empties
@@ -97,7 +96,7 @@ make_decision token model =
     let
         make_filter : LineType -> ((FieldLine, LineType) -> Maybe FieldLine)
         make_filter line_type =
-            (\a -> if snd a == line_type then Just (fst a) else Nothing)
+            (\a -> if second a == line_type then Just (first a) else Nothing)
 
         possibilities = map_possibilities token model.playground
         ones_to_win = List.filterMap (make_filter OneToWin) possibilities

@@ -1,5 +1,4 @@
-import Html.App exposing (program)
-import Html exposing (div)
+import Html exposing (div, program)
 import Html.Attributes exposing (class)
 
 import Style exposing (style_tag)
