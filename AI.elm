@@ -1,12 +1,10 @@
-module AI exposing (
-    LineType(..),
-    map_possibilities, coordinates_of_empties_in_line,
-    coordinates_of_all_empties
-    )
+module AI exposing (choices)
 import Playground exposing (Token(..), Playground, Row, FieldLine, Field,
-    count_of_kind, opposite_token, all_lines, line_content
+    count_of_kind, opposite_token, all_lines, line_content, is_center_empty
     )
 import Utils exposing (nested_indexed_map)
+import Tuple exposing (first, second)
+
 
 type LineType =
     Empty
@@ -40,6 +38,33 @@ line_type token row =
             else Stuck
         else ProtagonistWin
 
+
+choices token model =
+    let
+        make_filter : LineType -> ((FieldLine, LineType) -> Maybe FieldLine)
+        make_filter line_type =
+            (\a -> if second a == line_type then Just (first a) else Nothing)
+
+        possibilities = map_possibilities token model.playground
+        ones_to_win = List.filterMap (make_filter OneToWin) possibilities
+        ones_to_lose = List.filterMap (make_filter OneToLose) possibilities
+        two_to_win = List.filterMap (make_filter OneProtagonist) possibilities
+        two_to_lose = List.filterMap (make_filter  OneAntagonist) possibilities
+
+        mapper_with_playground =
+            flip coordinates_of_empties_in_line model.playground
+    in
+        if List.length ones_to_win > 0
+            then List.concat (List.map mapper_with_playground ones_to_win)
+        else if List.length ones_to_lose > 0
+            then List.concat (List.map mapper_with_playground ones_to_lose)
+        else if is_center_empty model.playground
+            then [(1,1)]
+        else if List.length two_to_win > 0
+            then List.concat (List.map mapper_with_playground two_to_win)
+        else if List.length two_to_lose > 0
+            then List.concat (List.map mapper_with_playground two_to_lose)
+        else coordinates_of_all_empties model.playground
 
 
 map_possibilities : Token -> Playground -> List (FieldLine, LineType)

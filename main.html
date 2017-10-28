@@ -9277,6 +9277,51 @@ var _user$project$AI$map_possibilities = F2(
 				_user$project$AI$line_type(token),
 				lines_content));
 	});
+var _user$project$AI$choices = F2(
+	function (token, model) {
+		var mapper_with_playground = A2(_elm_lang$core$Basics$flip, _user$project$AI$coordinates_of_empties_in_line, model.playground);
+		var possibilities = A2(_user$project$AI$map_possibilities, token, model.playground);
+		var make_filter = F2(
+			function (line_type, a) {
+				return _elm_lang$core$Native_Utils.eq(
+					_elm_lang$core$Tuple$second(a),
+					line_type) ? _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Tuple$first(a)) : _elm_lang$core$Maybe$Nothing;
+			});
+		var ones_to_win = A2(
+			_elm_lang$core$List$filterMap,
+			make_filter(_user$project$AI$OneToWin),
+			possibilities);
+		var ones_to_lose = A2(
+			_elm_lang$core$List$filterMap,
+			make_filter(_user$project$AI$OneToLose),
+			possibilities);
+		var two_to_win = A2(
+			_elm_lang$core$List$filterMap,
+			make_filter(_user$project$AI$OneProtagonist),
+			possibilities);
+		var two_to_lose = A2(
+			_elm_lang$core$List$filterMap,
+			make_filter(_user$project$AI$OneAntagonist),
+			possibilities);
+		return (_elm_lang$core$Native_Utils.cmp(
+			_elm_lang$core$List$length(ones_to_win),
+			0) > 0) ? _elm_lang$core$List$concat(
+			A2(_elm_lang$core$List$map, mapper_with_playground, ones_to_win)) : ((_elm_lang$core$Native_Utils.cmp(
+			_elm_lang$core$List$length(ones_to_lose),
+			0) > 0) ? _elm_lang$core$List$concat(
+			A2(_elm_lang$core$List$map, mapper_with_playground, ones_to_lose)) : (_user$project$Playground$is_center_empty(model.playground) ? {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 1, _1: 1},
+			_1: {ctor: '[]'}
+		} : ((_elm_lang$core$Native_Utils.cmp(
+			_elm_lang$core$List$length(two_to_win),
+			0) > 0) ? _elm_lang$core$List$concat(
+			A2(_elm_lang$core$List$map, mapper_with_playground, two_to_win)) : ((_elm_lang$core$Native_Utils.cmp(
+			_elm_lang$core$List$length(two_to_lose),
+			0) > 0) ? _elm_lang$core$List$concat(
+			A2(_elm_lang$core$List$map, mapper_with_playground, two_to_lose)) : _user$project$AI$coordinates_of_all_empties(model.playground)))));
+	});
 var _user$project$Style$style_text = '\n.test-app, .test-app *{\n    box-sizing: border-box;\n}\n\n.test-app{\n    width: 300px;\n    height: 300px;\n    display: block;\n}\n.test-app > .playground{\n    display: block;\n    width: 100%;\n    height: 100%;\n}\n.test-app > .playground > .row{\n    display: block;\n    width: 100%;\n    height: 100px;\n}\n.test-app > .playground > .row > .field{\n    display: block;\n    width: 100px;\n    height: 100px;\n    float: left;\n    font-size: 45px;\n    text-align: center;\n    padding: 20px;\n    border: 1px solid #000;\n}\n.test-app > .playground > .row > .field.win{\n    color: red;\n}\n';
 var _user$project$Style$style_tag = A3(
 	_elm_lang$html$Html$node,
@@ -9319,7 +9364,6 @@ var _user$project$Update$Choose = F2(
 	});
 var _user$project$Update$make_decision = F2(
 	function (token, model) {
-		var mapper_with_playground = A2(_elm_lang$core$Basics$flip, _user$project$AI$coordinates_of_empties_in_line, model.playground);
 		var make_gen = function (list) {
 			return (_elm_lang$core$Native_Utils.cmp(
 				_elm_lang$core$List$length(list),
@@ -9328,51 +9372,14 @@ var _user$project$Update$make_decision = F2(
 				0,
 				_elm_lang$core$List$length(list) - 1) : A2(_elm_lang$core$Random$int, -1, -1);
 		};
-		var possibilities = A2(_user$project$AI$map_possibilities, token, model.playground);
-		var make_filter = F2(
-			function (line_type, a) {
-				return _elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Tuple$second(a),
-					line_type) ? _elm_lang$core$Maybe$Just(
-					_elm_lang$core$Tuple$first(a)) : _elm_lang$core$Maybe$Nothing;
-			});
-		var ones_to_win = A2(
-			_elm_lang$core$List$filterMap,
-			make_filter(_user$project$AI$OneToWin),
-			possibilities);
-		var ones_to_lose = A2(
-			_elm_lang$core$List$filterMap,
-			make_filter(_user$project$AI$OneToLose),
-			possibilities);
-		var two_to_win = A2(
-			_elm_lang$core$List$filterMap,
-			make_filter(_user$project$AI$OneProtagonist),
-			possibilities);
-		var two_to_lose = A2(
-			_elm_lang$core$List$filterMap,
-			make_filter(_user$project$AI$OneAntagonist),
-			possibilities);
-		var choices = (_elm_lang$core$Native_Utils.cmp(
-			_elm_lang$core$List$length(ones_to_win),
-			0) > 0) ? _elm_lang$core$List$concat(
-			A2(_elm_lang$core$List$map, mapper_with_playground, ones_to_win)) : ((_elm_lang$core$Native_Utils.cmp(
-			_elm_lang$core$List$length(ones_to_lose),
-			0) > 0) ? _elm_lang$core$List$concat(
-			A2(_elm_lang$core$List$map, mapper_with_playground, ones_to_lose)) : (_user$project$Playground$is_center_empty(model.playground) ? {
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 1, _1: 1},
-			_1: {ctor: '[]'}
-		} : ((_elm_lang$core$Native_Utils.cmp(
-			_elm_lang$core$List$length(two_to_win),
-			0) > 0) ? _elm_lang$core$List$concat(
-			A2(_elm_lang$core$List$map, mapper_with_playground, two_to_win)) : ((_elm_lang$core$Native_Utils.cmp(
-			_elm_lang$core$List$length(two_to_lose),
-			0) > 0) ? _elm_lang$core$List$concat(
-			A2(_elm_lang$core$List$map, mapper_with_playground, two_to_lose)) : _user$project$AI$coordinates_of_all_empties(model.playground)))));
 		return A2(
 			_elm_lang$core$Random$generate,
-			A2(_elm_lang$core$Basics$flip, _user$project$Update$Choose, choices),
-			make_gen(choices));
+			A2(
+				_elm_lang$core$Basics$flip,
+				_user$project$Update$Choose,
+				A2(_user$project$AI$choices, token, model)),
+			make_gen(
+				A2(_user$project$AI$choices, token, model)));
 	});
 var _user$project$Update$make_turn = F4(
 	function (x, y, player, model) {

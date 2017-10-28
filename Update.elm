@@ -6,10 +6,7 @@ import Array
 import Random
 import Tuple exposing (first, second)
 
-import AI exposing (LineType(..), map_possibilities,
-    coordinates_of_empties_in_line, coordinates_of_all_empties
-
-    )
+import AI exposing (choices)
 import Utils exposing (map_nested_item)
 import Model exposing (Model, make_empty_model)
 import Playground exposing (Token(..), Field, FieldLine,
@@ -94,34 +91,10 @@ mark_field x y token model =
 make_decision : Token -> Model -> Cmd Msg
 make_decision token model =
     let
-        make_filter : LineType -> ((FieldLine, LineType) -> Maybe FieldLine)
-        make_filter line_type =
-            (\a -> if second a == line_type then Just (first a) else Nothing)
-
-        possibilities = map_possibilities token model.playground
-        ones_to_win = List.filterMap (make_filter OneToWin) possibilities
-        ones_to_lose = List.filterMap (make_filter OneToLose) possibilities
-        two_to_win = List.filterMap (make_filter OneProtagonist) possibilities
-        two_to_lose = List.filterMap (make_filter  OneAntagonist) possibilities
-
-        make_gen list =
-            if List.length list > 0 then Random.int 0 <| (List.length list) - 1
-            else Random.int -1 -1
-        mapper_with_playground =
-            flip coordinates_of_empties_in_line model.playground
-        choices =
-            if List.length ones_to_win > 0
-                then List.concat (List.map mapper_with_playground ones_to_win)
-            else if List.length ones_to_lose > 0
-                then List.concat (List.map mapper_with_playground ones_to_lose)
-            else if is_center_empty model.playground
-                then [(1,1)]
-            else if List.length two_to_win > 0
-                then List.concat (List.map mapper_with_playground two_to_win)
-            else if List.length two_to_lose > 0
-                then List.concat (List.map mapper_with_playground two_to_lose)
-            else coordinates_of_all_empties model.playground
+      make_gen list =
+        if List.length list > 0 then Random.int 0 <| (List.length list) - 1
+        else Random.int -1 -1
     in
-        Random.generate
-            (flip(Choose) choices)
-            (make_gen choices)
+      Random.generate
+        (flip(Choose) <| choices token model)
+        (make_gen <| choices token model)

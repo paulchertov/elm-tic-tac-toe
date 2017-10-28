@@ -17,11 +17,6 @@ main =
     }
 
 
---MODEL--
-model : Model
-model =
-    make_empty_model
-
 
 --UPDATE--
 update : Msg -> Model -> (Model, Cmd Msg)
